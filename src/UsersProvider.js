@@ -16,7 +16,7 @@ export const UsersProvider = props => {
 
 
   const getUsers = async () => { 
-      const res = await fetch('http://localhost:4000/info');
+      const res = await fetch('https://covid19us-server.herokuapp.com/info');
       let data = await res.json();
       setTotalCases(data.totalCases);
       setTotalDeaths(data.totalDeaths);
