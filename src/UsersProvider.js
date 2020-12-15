@@ -64,7 +64,7 @@ let maxNewDeaths = Math.max.apply(Math, reformatted_arr.map(function(state) { re
 
 
 if (arr.length == 0) { 
-    return <div className="loading">Fetching latest data...</div>
+    return <div className="loading"><div>Fetching latest data...</div><div>(This may take a second)</div></div>
 }
 
 
