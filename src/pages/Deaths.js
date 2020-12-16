@@ -1,38 +1,72 @@
+
 import React, { useState, useEffect, useContext } from "react";
-import Bar from "../components/bar";
+import MyResponsiveBar from '../components/nivo-bar';
 import { UsersContext } from '../UsersProvider';
 
+
+
 export default function Deaths() {
+
     const data = useContext(UsersContext);
 
     let arr = [...data.arr];
 
-    const date = data.date;
-    const max = data.maxDeaths;
-    
+    let reformatted_arr = arr.map((state) => {
+        return {
+            "name": state.name,
+            "deaths": state.deaths,
+            "pop": state.pop,
+            "Deaths Per 100,000 People": Math.round((state.deaths / state.pop) * 100000),
+            "DeathsPerCapita": Math.round((state.deaths / state.pop) * 100000)
 
-    if (arr.length == 0) { 
-        return <div className="loading">Fetching latest data...</div>
-    }
 
-    arr = arr.sort((a, b) => {
-        return (b.deaths-a.deaths);
+        }
     })
 
-    
+    console.log(reformatted_arr);
+
+    const date = data.date;
+    const max = data.maxDeaths;
+
+    reformatted_arr = reformatted_arr.sort((a, b) => {
+        return (a.deaths-b.deaths);
+    })
+
+    let perCapita = [...reformatted_arr]
+    perCapita = perCapita.sort((a, b) => {
+        return (a.DeathsPerCapita-b.DeathsPerCapita);
+    })
+
+
+   
+
     return (
+       
+        
         <div className="deaths-page">
-            <h1>Total Deaths Per State</h1>
+            <h1>Deaths Per 100,000 People</h1>
             <h3>{date}</h3>
 
             <div className="deaths-set">
-                <svg className="chart" viewBox="0 0 1000 2040" preserveAspectRatio="xMinYMin meet" aria-labelledby="title desc" role="img">
-                    {arr.map((state, index) => (
-                        <Bar name={state.name} max={max} number={state.deaths} numberStr={state.deathsStr} key={index} index={index}/>
-                    ))}
-                </svg>     
+                <div className="container-bar-new">
+        
+                    <MyResponsiveBar data={perCapita} keys={[ 'Deaths Per 100,000 People' ]}/>
+
+                </div>
+            </div>
+
+            <h1>Total Deaths</h1>
+            <h3>{date}</h3>
+
+            <div className="deaths-set">
+                <div className="deaths-set">
+                    <div className="container-bar-new">
+            
+                        <MyResponsiveBar data={reformatted_arr} keys={[ 'deaths' ]}/>
+
+                    </div>
+                </div>
             </div>
         </div>
-       
     )
 }

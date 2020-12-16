@@ -31,7 +31,6 @@ export default function bar(props) {
         <g className="bar">
             <text className="bar-text" x="0" y="1.3em" dy={`${index*40}`} >{name}: <tspan fontWeight="500">{props.numberStr}</tspan></text>
             <rect width={`${width}%`} x="220" y={`${index*40}`} height="30" fill={color}></rect>
-
         </g>
     )
 }

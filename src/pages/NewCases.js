@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Bar from "../components/bar";
+import MyResponsiveBar from '../components/nivo-bar';
+
 import { UsersContext } from '../UsersProvider';
 
 
@@ -7,45 +9,73 @@ export default function NewCases() {
     const data = useContext(UsersContext);
 
     let arr = [...data.arr];
-   
+
+
+    let reformatted_arr = arr.map((state) => {
+        let cases;
+        if (Number.isNaN(state.newCases)) {
+            cases = 0;
+        } else {
+            cases = state.newCases;
+        }
+        return {
+            "name": state.name,
+            "New Cases": cases,
+            "newCases": cases,
+            "pop": state.pop,
+            "New Cases Per 100,000 People": Math.round((cases / state.pop) * 100000),
+            "NewCasesPerCapita": Math.round((cases / state.pop) * 100000)
+        }
+    })
+
+    console.log(reformatted_arr);
+
     const date = data.date;
-    const max = data.maxDeaths;
 
+  
+    
 
-    if (arr.length == 0) { 
-        return <div className="loading">Fetching latest data...</div>
-    }
 
     
 
-    arr = arr.sort((a, b) => {
-        let aTemp;
-        let bTemp;
-        if (Number.isNaN(a.newCases)) {
-            aTemp = 0;
-        } else {
-            aTemp = a.newCases;
-        }
-        if (Number.isNaN(b.newCases)) {
-            bTemp = 0;
-        } else {
-            bTemp = b.newCases;
-        }
-    
-        return (bTemp-aTemp);
+    reformatted_arr = reformatted_arr.sort((a, b) => {
+       return a.newCases-b.newCases;
+    })
+
+    let perCapita = [...reformatted_arr]
+    perCapita = perCapita.sort((a, b) => {
+        return (a.NewCasesPerCapita-b.NewCasesPerCapita);
     })
 
     return (
+        
+
+
         <div className="new-cases-page">
-            <h1>New Cases Per State</h1>
+            <h1>New Cases Per 100,000 People</h1>
             <h3>{date}</h3>
             <h4>Note: If no number is shown, new numbers for this state have not been reported yet today.</h4>
+
             <div className="deaths-set">
-                <svg className="chart" viewBox="0 0 1000 2040" preserveAspectRatio="xMinYMin meet" aria-labelledby="title desc" role="img">
-                    {arr.map((state, index) => (
-                        <Bar name={state.name} max={max} number={state.newCases} numberStr={state.newCasesStr} key={index} index={index}/>
-                    ))}
-                </svg>     
+                <div className="container-bar-new">
+        
+                    <MyResponsiveBar data={perCapita} keys={[ 'New Cases Per 100,000 People' ]}/>
+
+                </div>
+            </div>
+
+            <h1>Total New Cases</h1>
+            <h3>{date}</h3>
+            <h4>Note: If no number is shown, new numbers for this state have not been reported yet today.</h4>
+
+            <div className="deaths-set">
+                <div className="deaths-set">
+                    <div className="container-bar-new">
+            
+                        <MyResponsiveBar data={reformatted_arr} keys={[ 'New Cases' ]}/>
+
+                    </div>
+                </div>
             </div>
         </div>
        
